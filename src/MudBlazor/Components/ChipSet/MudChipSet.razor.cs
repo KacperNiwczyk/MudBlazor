@@ -82,7 +82,10 @@ namespace MudBlazor
                 this.InvokeAsync(StateHasChanged);
             }
         }
-
+        
+        [Parameter]
+        public bool UseOrdinaryCheck { get; set; }
+        
         /// <summary>
         /// Called when the selected chip changes, in Choice mode
         /// </summary>
@@ -107,10 +110,21 @@ namespace MudBlazor
                 }
                 else
                 {
-                    var selected = new HashSet<MudChip>(value);
-                    foreach (var chip in _chips)
+                    if (UseOrdinaryCheck)
                     {
-                        chip.IsSelected = selected.Contains(chip);
+                        var selected = new HashSet<string>(value.Select(x => x.Text));
+                        foreach (var chip in _chips)
+                        {
+                            chip.IsSelected = selected.Contains(chip.Text);
+                        }
+                    }
+                    else
+                    {
+                        var selected = new HashSet<MudChip>(value);
+                        foreach (var chip in _chips)
+                        {
+                            chip.IsSelected = selected.Contains(chip);
+                        }  
                     }
                 }
                 this.InvokeAsync(StateHasChanged);
